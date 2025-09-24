@@ -2,9 +2,7 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCESS_KEY_ID     = credentials('aws-access-key-id')     // Jenkins credential ID for Access Key
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key') // Jenkins credential ID for Secret Key
-        AWS_DEFAULT_REGION    = 'eu-north-1'
+        AWS_DEFAULT_REGION = 'eu-north-1'
     }
 
     stages {
@@ -18,7 +16,11 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 dir('terraform') {
-                    sh 'terraform init'
+                    withCredentials([usernamePassword(credentialsId: 'b6fdd17c-4999-4544-a284-dae3127db2d7',
+                                                     usernameVariable: 'AWS_ACCESS_KEY_ID',
+                                                     passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        sh 'terraform init'
+                    }
                 }
             }
         }
@@ -26,7 +28,11 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 dir('terraform') {
-                    sh 'terraform plan'
+                    withCredentials([usernamePassword(credentialsId: 'b6fdd17c-4999-4544-a284-dae3127db2d7',
+                                                     usernameVariable: 'AWS_ACCESS_KEY_ID',
+                                                     passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        sh 'terraform plan'
+                    }
                 }
             }
         }
@@ -34,7 +40,11 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 dir('terraform') {
-                    sh 'terraform apply -auto-approve'
+                    withCredentials([usernamePassword(credentialsId: 'b6fdd17c-4999-4544-a284-dae3127db2d7',
+                                                     usernameVariable: 'AWS_ACCESS_KEY_ID',
+                                                     passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        sh 'terraform apply -auto-approve'
+                    }
                 }
             }
         }
